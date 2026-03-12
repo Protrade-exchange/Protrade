@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>ProTrade Exchange</title>
 
 <script src="https://s3.tradingview.com/tv.js"></script>
@@ -16,8 +15,6 @@ font-family:Segoe UI;
 background:#0f172a;
 color:white;
 }
-
-/* HEADER */
 
 header{
 display:flex;
@@ -39,8 +36,6 @@ padding:6px 12px;
 border-radius:8px;
 }
 
-/* MAIN */
-
 .main{
 padding:15px;
 padding-bottom:95px;
@@ -53,8 +48,6 @@ display:none;
 .panel.active{
 display:block;
 }
-
-/* WIDGET */
 
 .widget{
 background:#1e293b;
@@ -80,8 +73,6 @@ border-radius:6px;
 width:90%;
 }
 
-/* TABLE */
-
 table{
 width:100%;
 border-collapse:collapse;
@@ -92,8 +83,6 @@ padding:10px;
 border-bottom:1px solid #1e293b;
 }
 
-/* WALLET ADDRESS */
-
 .deposit-address{
 background:#020617;
 padding:10px;
@@ -102,8 +91,6 @@ font-size:12px;
 margin:10px 0;
 word-break:break-all;
 }
-
-/* BOTTOM NAV */
 
 .bottom-nav{
 position:fixed;
@@ -125,8 +112,6 @@ display:flex;
 flex-direction:column;
 align-items:center;
 }
-
-/* MODALS */
 
 .modal{
 display:none;
@@ -155,8 +140,6 @@ display:block;
 cursor:pointer;
 color:#38bdf8;
 }
-
-/* NOTIFICATION */
 
 .notify{
 position:fixed;
@@ -196,8 +179,6 @@ $<span id="balance">0</span>
 
 <div class="main">
 
-<!-- DASHBOARD -->
-
 <div id="dashboard" class="panel active">
 
 <div class="widget">
@@ -218,8 +199,6 @@ $<span id="balance">0</span>
 </div>
 
 </div>
-
-<!-- MARKET -->
 
 <div id="market" class="panel">
 
@@ -244,8 +223,6 @@ $<span id="balance">0</span>
 </div>
 
 </div>
-
-<!-- PORTFOLIO -->
 
 <div id="portfolio" class="panel">
 
@@ -273,8 +250,6 @@ $<span id="balance">0</span>
 
 </div>
 
-<!-- WALLET -->
-
 <div id="wallet" class="panel">
 
 <div class="widget">
@@ -293,7 +268,7 @@ bc1qjqcm9ngrvm570x6jzxk8hyqaz94g5l3zxngkcf
 
 <div class="widget">
 
-<h3>Withdraw BTC submitted</h3>
+<h3>Withdraw BTC (Demo)</h3>
 
 <input id="withdrawAddress" placeholder="Recipient BTC Address">
 
@@ -308,8 +283,6 @@ bc1qjqcm9ngrvm570x6jzxk8hyqaz94g5l3zxngkcf
 </div>
 
 </div>
-
-<!-- LOGIN MODAL -->
 
 <div class="modal" id="loginModal">
 
@@ -328,29 +301,12 @@ bc1qjqcm9ngrvm570x6jzxk8hyqaz94g5l3zxngkcf
 
 </div>
 
-<!-- BOTTOM NAV -->
-
 <div class="bottom-nav">
 
-<button onclick="showPanel('dashboard')">
-🏠
-<div>Home</div>
-</button>
-
-<button onclick="showPanel('market')">
-📈
-<div>Market</div>
-</button>
-
-<button onclick="showPanel('portfolio')">
-💼
-<div>Portfolio</div>
-</button>
-
-<button onclick="showPanel('wallet')">
-👛
-<div>Wallet</div>
-</button>
+<button onclick="showPanel('dashboard')">🏠<div>Home</div></button>
+<button onclick="showPanel('market')">📈<div>Market</div></button>
+<button onclick="showPanel('portfolio')">💼<div>Portfolio</div></button>
+<button onclick="showPanel('wallet')">👛<div>Wallet</div></button>
 
 </div>
 
@@ -360,25 +316,10 @@ let balance=0
 let btc=0
 let btcPrice=0
 
-/* LOAD SAVED BALANCE */
-
-if(localStorage.getItem("balance")){
-balance=parseFloat(localStorage.getItem("balance"))
-}
-
-document.getElementById("balance").innerText=balance.toFixed(2)
-
-/* PANEL SWITCH */
-
 function showPanel(id){
-
 document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"))
-
 document.getElementById(id).classList.add("active")
-
 }
-
-/* LOGIN */
 
 function showLogin(){
 loginModal.style.display="flex"
@@ -389,7 +330,6 @@ loginModal.style.display="none"
 }
 
 function login(){
-
 let u=username.value.trim()
 let p=password.value.trim()
 
@@ -399,80 +339,55 @@ return
 }
 
 localStorage.setItem("loggedIn","true")
-localStorage.setItem("user",u)
-
 loginBtn.style.display="none"
 logoutBtn.style.display="inline-block"
 
 closeLogin()
-
 showNotify("Welcome "+u)
-
 }
 
 function logout(){
-
 localStorage.removeItem("loggedIn")
-
 loginBtn.style.display="inline-block"
 logoutBtn.style.display="none"
-
 showNotify("Logged out")
-
 }
 
-/* AUTH CHECK */
-
 function requireAuth(){
-
 if(localStorage.getItem("loggedIn")!=="true"){
 showLogin()
 throw "login required"
 }
-
 }
 
-/* BTC PRICE */
-
 async function fetchBTC(){
-
 let r=await fetch("https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT")
-
 let d=await r.json()
 
 btcPrice=parseFloat(d.price)
 
 document.getElementById("btc-price").innerText=btcPrice.toFixed(2)
-
 btcMarket.innerText=btcPrice.toFixed(2)
 
 updatePortfolio()
-
 }
 
 setInterval(fetchBTC,5000)
 fetchBTC()
 
-/* TRADE */
-
 function buy(){
-
 if(balance<100){
 showNotify("Not enough balance")
 return
 }
 
 let amount=100/btcPrice
-
 btc+=amount
 balance-=100
-
 update()
-
 }
 
 function sell(){
-
 if(btc<=0){
 showNotify("No BTC to sell")
 return
@@ -480,88 +395,62 @@ return
 
 balance+=btc*btcPrice
 btc=0
-
 update()
-
 }
 
-/* WITHDRAW DEMO */
-
 function withdraw(){
-
 let addr=document.getElementById("withdrawAddress").value
-let amt=parseFloat(document.getElementById("withdrawAmount").value)
+let amt=document.getElementById("withdrawAmount").value
 
 if(!addr||!amt){
 showNotify("Enter address and amount")
 return
 }
 
-walletLog.innerHTML="<li>Withdrawal requested: "+amt+" BTC → "+addr+"</li>"+walletLog.innerHTML
+walletLog.innerHTML="<li>Withdrawal request "+amt+" BTC → "+addr+"</li>"+walletLog.innerHTML
 
-showNotify("Withdrawal request submitted")
-
+showNotify("Withdrawal submitted (Demo)")
 }
 
-/* UPDATE */
-
 function update(){
-
-localStorage.setItem("balance",balance)
-
 document.getElementById("balance").innerText=balance.toFixed(2)
-
 updatePortfolio()
-
 }
 
 function updatePortfolio(){
-
 btcAmount.innerText=btc.toFixed(4)
 btcValue.innerText="$"+(btc*btcPrice).toFixed(2)
-
 }
-
-/* WALLET */
 
 function copyAddress(){
-
 let text=document.getElementById("depositAddress").innerText
-
 navigator.clipboard.writeText(text)
-
 showNotify("Wallet address copied")
-
 }
+
+/* FIXED DEPOSIT REDIRECT */
 
 function startDeposit(){
 
 copyAddress()
 
-showNotify("Opening deposit page")
+showNotify("Redirecting to deposit page")
 
 setTimeout(()=>{
-window.open("https://exchange.mercuryo.io/","_blank")
+window.location.href="https://exchange.mercuryo.io/"
 },1200)
 
 }
 
-/* NOTIFICATION */
-
 function showNotify(msg){
-
 let n=document.getElementById("notify")
-
 n.innerText=msg
 n.style.display="block"
 
 setTimeout(()=>{
 n.style.display="none"
 },2000)
-
 }
-
-/* CHART */
 
 new TradingView.widget({
 container_id:"chart",
@@ -575,4 +464,4 @@ theme:"dark"
 </script>
 
 </body>
-  </html>
+</html>
